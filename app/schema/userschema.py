@@ -11,3 +11,8 @@ class UserLogin(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ForgotPassword(BaseModel):
+    email: EmailStr
+    new_password: str

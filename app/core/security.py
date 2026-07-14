@@ -5,20 +5,23 @@ from passlib.context import CryptContext
 SECRET_KEY = "secret"
 ALGORITHM = "HS256"
 
-pwd = CryptContext(schemes=["bcrypt"])
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
+# 🔐 Hash Password
 def hash_password(password: str):
-    return pwd.hash(password)
+    return pwd_context.hash(password)
 
-def verify_password(plain, hashed):
-    return pwd.verify(plain, hashed)
 
+# 🔍 Verify Password
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+# 🔑 Create JWT Token
 def create_token(data: dict):
+    payload = data.copy()
 
-    data["exp"] = datetime.now(timezone.utc) + timedelta(minutes=30)
+    payload["exp"] = datetime.now(timezone.utc) + timedelta(minutes=30)
 
-    return jwt.encode(
-         data,
-        SECRET_KEY,
-        algorithm=ALGORITHM
-    )
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
